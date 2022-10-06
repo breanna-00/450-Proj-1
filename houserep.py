@@ -7,12 +7,12 @@
 
 import csv
 
-#creates an array of all the house of representatives twitter handles 
+#returns an array of all the house of representatives twitter handles 
 def getArrTwitterHandles(): 
     names_handles = [] 
 
     #opens file
-    with open('simple_house_handles.csv') as file_obj:
+    with open('house_of_rep.csv') as file_obj:
         reader_obj = csv.reader(file_obj)
 
         #adds each row to the array 
@@ -22,15 +22,20 @@ def getArrTwitterHandles():
     return names_handles
 
 #allows user to choose which politicians they want to see 
+#return array of twitter handles
 def choosePeople(): 
 
     rep_twitter_handles = getArrTwitterHandles()
     count = 1
     for elem in rep_twitter_handles: 
-        print(count, " ", elem[0], " ", elem[1], ": ", elem[2])
+        print(count, " ", elem[0], " ", elem[1], ": ", elem[2], "District: ", elem[3], "Party: ", elem[4])
         count += 1
+
     print("Please enter the numbers of the senators you want to view seperated by spaces: ")
     chosenReps = input()
+
+
+    
 
     arrChosen = chosenReps.split(" ")
     #print(arrChosen)
@@ -45,3 +50,7 @@ def choosePeople():
 
     #print(handlesOfChosen)
     return handlesOfChosen
+
+
+
+choosePeople()
