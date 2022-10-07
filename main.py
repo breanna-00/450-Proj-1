@@ -1,6 +1,9 @@
+from os import remove
+import re
+from opcode import hasjabs
 from curses import raw
 from TwitterAuth import authTwitterAPI, getTweets
-from houserep import getArrTwitterHandles, choosePeople
+from houserep import choosePeople
 import numpy as np
 import pandas as pd
 from google.cloud import language_v1
@@ -14,6 +17,7 @@ from nltk.probability import FreqDist
 chosenMembers = choosePeople()
 TwitterAPI = authTwitterAPI()
 rawTweets = []
+print(str(chosenMembers))
 
 # --- Fetch Data: Get tweet data @githel @breanna ---
 for member in chosenMembers:

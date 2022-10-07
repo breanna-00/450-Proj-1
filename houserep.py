@@ -24,7 +24,6 @@ def getArrTwitterHandles():
 #allows user to choose which politicians they want to see 
 #return array of twitter handles
 def choosePeople(): 
-
     rep_twitter_handles = getArrTwitterHandles()
     count = 1
     for elem in rep_twitter_handles: 
@@ -33,9 +32,6 @@ def choosePeople():
 
     print("Please enter the numbers of the senators you want to view seperated by spaces: ")
     chosenReps = input()
-
-
-    
 
     arrChosen = chosenReps.split(" ")
     #print(arrChosen)
@@ -50,7 +46,3 @@ def choosePeople():
 
     #print(handlesOfChosen)
     return handlesOfChosen
-
-
-
-choosePeople()
