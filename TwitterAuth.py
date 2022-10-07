@@ -30,7 +30,11 @@ def authTwitterAPI():
     api = tweepy.API(auth)
     return api
 
-# credit: https://stackoverflow.com/questions/8376691/how-to-remove-hashtag-user-link-of-a-tweet-using-regular-expression
+# credits:
+# https://stackoverflow.com/questions/8376691/how-to-remove-hashtag-user-link-of-a-tweet-using-regular-expression
+# https://www.youtube.com/watch?v=b9G78PxZtX8&t=203s
+# https://stackoverflow.com/questions/33404752/removing-emojis-from-a-string-in-python - Emoji links
+# https://stackoverflow.com/questions/71591365/cleaning-up-tweets-before-sentiment-analysis-on-cryptocurrencies 
 def strip_all_entities(text):
     # --Clean Text Data
     text = text.replace("@[A-Za-z0-9_]+", '', True)

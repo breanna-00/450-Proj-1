@@ -29,6 +29,7 @@ for member in chosenMembers:
 # Save phrases as entire words
 # 1. run entity analysis to separate phrases with NLP API
 # 2. get frequency per phrase with nltk 
+# Credit: https://cloud.google.com/natural-language/docs/samples
 phrases = []
 print("...Running Entity Analysis on All Tweets...")
 for tweet in rawTweets:
