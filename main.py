@@ -1,61 +1,87 @@
-from curses import raw
+##from curses import raw
+from os import remove
+import re
+from opcode import hasjabs
 from TwitterAuth import authTwitterAPI, getTweets
-from houserep import getArrTwitterHandles, choosePeople
+from houserep import getArrTwitterHandles, choosePeople, getFilterWord
 import numpy as np
 import pandas as pd
-from google.cloud import language_v1
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
-import nltk
-from nltk import word_tokenize
-from nltk.probability import FreqDist
+from wordcloud import STOPWORDS
 
-# --- User Interaction: Get user inputs @nikki ---
+# Get user inputs @nikki
 chosenMembers = choosePeople()
 TwitterAPI = authTwitterAPI()
+columns = ['User', 'Tweets']
 rawTweets = []
 
-# --- Fetch Data: Get tweet data @githel @breanna ---
+
+# Get raw tweet data @githel @breanna
 for member in chosenMembers:
     handle = member[2]
+    print(handle)
     tweets = getTweets(handle,TwitterAPI) 
-    # extend tweets array to rawTweets
-    rawTweets += tweets
+    rawTweets.append([handle, tweets])
+rawTweets_df = pd.DataFrame(rawTweets, columns=columns)
 
-# --- Entity Analysis: Send clean tweet data to Natural Language API @githel ---
-# Save phrases as entire words
-# 1. run entity analysis to separate phrases with NLP API
-# 2. get frequency per phrase with nltk 
-phrases = []
-print("...Running Entity Analysis on All Tweets...")
-for tweet in rawTweets:
-    LangAPI = language_v1.LanguageServiceClient()
-    type_ = language_v1.Document.Type.PLAIN_TEXT
-    language = "en"
-    document = {"content": tweet, "type_": type_, "language": language}
-    encoding_type = language_v1.EncodingType.UTF8
-    response = LangAPI.analyze_entities(request = {'document': document, 'encoding_type': encoding_type})
 
-    for entity in response.entities:
-        # Loop over the mentions of this entity in the input document to grab individual phrases
-        for mention in entity.mentions:
-            phrase = mention.text.content
-            phrases.append(phrase)
-# Count frequencies per phrase
-phrase_freqs = nltk.FreqDist(phrases)
-top_words = dict(sorted(phrase_freqs.items(), key=lambda item: item[1]))
-# --- Output for User ---
-print("--- Top 50 Words with Frequencies from House of Rep Member Tweets ---")
-members_str = '-- Members: '
-for member in chosenMembers:
-    members_str += member[2] + ", "
-print(members_str + " --\n")
-for phrase, freq in top_words.items():
-    print(phrase + ": " + str(freq))
+# Clean raw tweet data @Katherine
 
-# --- WordCloud: Create WordCloud based on Phrase Frequencies ---
-word_cloud = WordCloud(background_color='white',width=900,height=500, max_words=1628,relative_scaling=1,normalize_plurals=False).generate_from_frequencies(top_words)
-plt.imshow(word_cloud, interpolation='bilinear')
-plt.axis("off")
-plt.show()
+fillerWords = getFilterWord()
+# Function to just take the words that are not in the list of filler words
+def remove_word(text):
+    
+    textFilter = [word for word in text.split() if word not in fillerWords] 
 
+    return " ".join(textFilter)
+##deletes Stopwords
+rawTweets_df['Tweets'] = rawTweets_df.Tweets.map(lambda x: remove_word(x.to_string().lower()))  
+## delete Non text data
+rawTweets_df["Tweets"] = rawTweets_df["Tweets"].str.replace("@[A-Za-z0-9_]+", '', regex=True)
+rawTweets_df["Tweets"] = rawTweets_df["Tweets"].str.replace("#[A-Za-z0-9_]+", '', regex=True) 
+rawTweets_df["Tweets"] = rawTweets_df["Tweets"].str.replace('http\S+', '', regex=True)
+rawTweets_df["Tweets"] = rawTweets_df["Tweets"].str.replace('[\+()!?:“”’"\[\]&]', '', regex=True)
+rawTweets_df["Tweets"] = rawTweets_df["Tweets"].str.replace('\\\\', '', regex=True)
+
+##Filter Emojis expression- Creation of the regular expresion compiler
+emoji_pattern = re.compile("["
+        u"\U0001F600-\U0001F64F"  # emoticons
+        u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+        u"\U0001F680-\U0001F6FF"  # transport & map symbols
+        u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+        u"\U00002500-\U00002BEF"  # chinese char
+        u"\U00002702-\U000027B0"
+        u"\U00002702-\U000027B0"
+        u"\U000024C2-\U0001F251"
+        u"\U0001f926-\U0001f937"
+        u"\U00010000-\U0010ffff"
+        u"\u2640-\u2642" 
+        u"\u2600-\u2B55"
+        u"\u200d"
+        u"\u23cf"
+        u"\u23e9"
+        u"\u231a"
+        u"\ufe0f"  # dingbats
+        u"\u3030"
+                      "]+", re.UNICODE)
+
+## execute the filter emojis expression
+rawTweets_df["Tweets"] = rawTweets_df["Tweets"].str.replace(emoji_pattern, "", regex=True)
+
+
+#If we want an X representative we can use print(rawTweets_df['Tweets'].iloc[X]) where X is the # of the representative
+print(rawTweets_df['Tweets']) # prints all the tweets filtered
+
+# Credits
+# https://www.youtube.com/watch?v=b9G78PxZtX8&t=203s
+# https://stackoverflow.com/questions/33404752/removing-emojis-from-a-string-in-python - Emoji links
+# https://stackoverflow.com/questions/71591365/cleaning-up-tweets-before-sentiment-analysis-on-cryptocurrencies 
+
+
+
+
+
+
+
+# use rawTweets_df 
+
+# Send clean tweet data to Natural Language API @githel

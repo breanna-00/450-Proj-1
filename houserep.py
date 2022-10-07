@@ -7,12 +7,12 @@
 
 import csv
 
-#returns an array of all the house of representatives twitter handles 
+#creates an array of all the house of representatives twitter handles 
 def getArrTwitterHandles(): 
     names_handles = [] 
 
     #opens file
-    with open('house_of_rep.csv') as file_obj:
+    with open('simple_house_handles.csv') as file_obj:
         reader_obj = csv.reader(file_obj)
 
         #adds each row to the array 
@@ -22,35 +22,41 @@ def getArrTwitterHandles():
     return names_handles
 
 #allows user to choose which politicians they want to see 
-#return array of twitter handles
 def choosePeople(): 
 
     rep_twitter_handles = getArrTwitterHandles()
     count = 1
     for elem in rep_twitter_handles: 
-        print(count, " ", elem[0], " ", elem[1], ": ", elem[2], "District: ", elem[3], "Party: ", elem[4])
+        print(count, " ", elem[0], " ", elem[1], ": ", elem[2])
         count += 1
-
     print("Please enter the numbers of the senators you want to view seperated by spaces: ")
     chosenReps = input()
 
-
-    
-
-    arrChosen = chosenReps.split(" ")
-    #print(arrChosen)
+    #arrChosen = chosenReps.split(" ")
+    arrChosen = chosenReps
+    print(arrChosen)
 
     handlesOfChosen = []
     #gets the twitter handles for which representatives the user chose 
-    for e in arrChosen: 
-        if e != '': 
-            wantedRepIndex = int(e) - 1
-            wantedRep = rep_twitter_handles[wantedRepIndex]
-            handlesOfChosen.append(wantedRep)
+    for e in range(arrChosen): 
+       # if e != 0: # 
+        wantedRepIndex = int(e) - 1
+        wantedRep = rep_twitter_handles[wantedRepIndex]
+        handlesOfChosen.append(wantedRep)
 
     #print(handlesOfChosen)
     return handlesOfChosen
 
 
+#Function to get the words from the TXT file "Filler words"
+def getFilterWord(): 
+    word_handles = [] 
 
-choosePeople()
+    #opens file
+    with open('filler words.txt') as file_obj:
+       
+        #adds each row to the array 
+        for row in file_obj.readlines(): 
+            word_handles.append(row.replace('\n',''))
+    
+    return word_handles
