@@ -17,7 +17,6 @@ from nltk.probability import FreqDist
 chosenMembers = choosePeople()
 TwitterAPI = authTwitterAPI()
 rawTweets = []
-print(str(chosenMembers))
 
 # --- Fetch Data: Get tweet data @githel @breanna ---
 for member in chosenMembers:

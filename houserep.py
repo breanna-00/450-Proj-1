@@ -7,7 +7,7 @@
 
 import csv
 
-#returns an array of all the house of representatives twitter handles 
+#creates an array of all the house of representatives twitter handles 
 def getArrTwitterHandles(): 
     names_handles = [] 
 
@@ -22,14 +22,13 @@ def getArrTwitterHandles():
     return names_handles
 
 #allows user to choose which politicians they want to see 
-#return array of twitter handles
 def choosePeople(): 
+
     rep_twitter_handles = getArrTwitterHandles()
     count = 1
     for elem in rep_twitter_handles: 
-        print(count, " ", elem[0], " ", elem[1], ": ", elem[2], "District: ", elem[3], "Party: ", elem[4])
+        print(count, " ", elem[0], " ", elem[1], ": ", elem[2])
         count += 1
-
     print("Please enter the numbers of the senators you want to view seperated by spaces: ")
     chosenReps = input()
 
@@ -40,7 +39,7 @@ def choosePeople():
     #gets the twitter handles for which representatives the user chose 
     for e in arrChosen: 
         if e != '': 
-            wantedRepIndex = int(e) 
+            wantedRepIndex = int(e) - 1
             wantedRep = rep_twitter_handles[wantedRepIndex]
             handlesOfChosen.append(wantedRep)
 
