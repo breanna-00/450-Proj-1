@@ -40,7 +40,7 @@ def choosePeople():
     #gets the twitter handles for which representatives the user chose 
     for e in arrChosen: 
         if e != '': 
-            wantedRepIndex = int(e) - 1
+            wantedRepIndex = int(e) 
             wantedRep = rep_twitter_handles[wantedRepIndex]
             handlesOfChosen.append(wantedRep)
 
